@@ -20,7 +20,7 @@ typedef enum{
     NUMBER
 } TokenType;
 
-typedef struct TokenRecord
+struct TokenRecord
 {
     /* data */
     TokenType token_type;
