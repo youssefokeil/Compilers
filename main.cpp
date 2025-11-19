@@ -40,7 +40,7 @@ public:
                 c = input[position]; 
             else break;
         }
-
+        cout << "Position: " << position <<endl;
         // substring the remaining of the input
         remaining = input.substr(position);
 
@@ -51,11 +51,25 @@ public:
             position += lexeme.length(); 
             tokenRecord.token_type=TokenType::NUMBER;
             tokenRecord.num_val= stoi(lexeme);
+            cout << "Position: " << position <<endl;
+            cout<<"num"<<endl;
+            return tokenRecord;
+        }
 
+        // match alphanumeric
+        else if(regex_search(remaining, match, identifierPattern,regex_constants::match_continuous)){
+            string lexeme = match.str();
+            // change position to skip the lexeme
+            position += lexeme.length(); 
+            tokenRecord.token_type=TokenType::IDENTIFIER;
+            tokenRecord.string_val = lexeme;
+
+            cout<< "position: "<<position<<endl;
             return tokenRecord;
         }
 
         TokenRecord tr;
+        tr.token_type=TokenType::UNTIL;
         return tr;
 
         
@@ -64,10 +78,16 @@ public:
 
 int main(){
     string input;
-    input = " 123 ";
+    input = " joe \n 123 ";
     Scanner s(input);
+    
     TokenRecord tr= s.getNextToken();
-    cout << "Token Value: " << tr.num_val;
-    cout << "Token Type:" << TokenType(tr.token_type);
+    cout << "Token Value: " << tr.string_val <<endl;
+    cout << "Token Type:" << TokenType(tr.token_type) << endl;
+
+    TokenRecord tr2 = s.getNextToken();
+    cout << "Token Value: " << tr2.num_val <<endl;
+    cout << "Token Type:" << TokenType(tr2.token_type)<<endl;
+
     return 0;
 }

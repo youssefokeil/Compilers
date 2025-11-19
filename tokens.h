@@ -1,3 +1,5 @@
+#include <string>
+
 typedef enum{
     SEMICOLON,
     IF,
@@ -24,6 +26,6 @@ struct TokenRecord
 {
     /* data */
     TokenType token_type;
-    char* string_val;
+    std::string string_val;
     int num_val;
 };
