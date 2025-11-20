@@ -77,8 +77,8 @@ public:
                 // matching the ':='    
                 case ':':{
                 if(input[position]='='){
-                    return {TokenType::ASSIGN, ":=", 0};
                     position++;
+                    return {TokenType::ASSIGN, ":=", 0};
                 }}
                 case '<':
                     return {TokenType::LESSTHAN, "<", 0};
@@ -116,7 +116,7 @@ public:
 
 int main(){
     string input;
-    input = " joe ; = 123 ";
+    input = " joe ; := 123 ";
     Scanner s(input);
     
     TokenRecord tr= s.getNextToken();
