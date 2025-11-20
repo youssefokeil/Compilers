@@ -40,7 +40,9 @@ public:
                 c = input[position]; 
             else break;
         }
-        cout << "Position: " << position <<endl;
+
+
+        
         // substring the remaining of the input
         remaining = input.substr(position);
 
@@ -51,8 +53,7 @@ public:
             position += lexeme.length(); 
             tokenRecord.token_type=TokenType::NUMBER;
             tokenRecord.num_val= stoi(lexeme);
-            cout << "Position: " << position <<endl;
-            cout<<"num"<<endl;
+
             return tokenRecord;
         }
 
@@ -63,9 +64,46 @@ public:
             position += lexeme.length(); 
             tokenRecord.token_type=TokenType::IDENTIFIER;
             tokenRecord.string_val = lexeme;
-
-            cout<< "position: "<<position<<endl;
             return tokenRecord;
+        }
+
+        // matching symbols only
+        else{
+            //advance forward
+            position++; //i know it makes logical sense to be after the switch-case
+            switch(c){
+                case ';':
+                    return {TokenType::SEMICOLON, ";", 0};
+                // matching the ':='    
+                case ':':{
+                if(input[position]='='){
+                    return {TokenType::ASSIGN, ":=", 0};
+                    position++;
+                }}
+                case '<':
+                    return {TokenType::LESSTHAN, "<", 0};
+                case '+':
+                    return {TokenType::PLUS, "+", 0};
+                case '=':
+                    return {TokenType::EQUAL, "=", 0};
+                case '-':
+                    return {TokenType::MINUS, "-", 0};
+                case '*':
+                    return {TokenType::MULT, ";", 0};
+                case '/':
+                    return {TokenType::DIV, "/", 0};
+                case '(':
+                    return {TokenType::OPENBRACKET, "(", 0};
+                case ')':
+                    return {TokenType::CLOSEDBRACKET, ")", 0};
+                // I'll handle errors
+                default:
+                    return {TokenType::ERROR, NULL, 0};
+            
+
+            }
+
+
         }
 
         TokenRecord tr;
@@ -78,16 +116,26 @@ public:
 
 int main(){
     string input;
-    input = " joe \n 123 ";
+    input = " joe ; = 123 ";
     Scanner s(input);
     
     TokenRecord tr= s.getNextToken();
     cout << "Token Value: " << tr.string_val <<endl;
-    cout << "Token Type:" << TokenType(tr.token_type) << endl;
+    cout << "Token Type:" << tr.token_type << endl;
 
     TokenRecord tr2 = s.getNextToken();
-    cout << "Token Value: " << tr2.num_val <<endl;
-    cout << "Token Type:" << TokenType(tr2.token_type)<<endl;
+    cout << "Token Value: " << tr2.string_val <<endl;
+    cout << "Token Type:" << tr2.token_type<<endl;
+
+    TokenRecord tr3 = s.getNextToken();
+    cout << "Token Value: " << tr3.string_val <<endl;
+    cout << "Token Type:" << tr3.token_type<<endl;
+
+    TokenRecord tr4 = s.getNextToken();
+    cout << "Token Value: " << tr4.num_val <<endl;
+    cout << "Token Type:" << tr4.token_type <<endl;
+
+
 
     return 0;
 }

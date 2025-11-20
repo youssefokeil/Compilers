@@ -19,7 +19,8 @@ typedef enum{
     DIV, 
     OPENBRACKET,
     CLOSEDBRACKET,
-    NUMBER
+    NUMBER,
+    ERROR
 } TokenType;
 
 struct TokenRecord
