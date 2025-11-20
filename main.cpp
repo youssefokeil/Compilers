@@ -76,7 +76,7 @@ public:
                     return {TokenType::SEMICOLON, ";", 0};
                 // matching the ':='    
                 case ':':{
-                if(input[position]='='){
+                if(input[position]=='='){
                     position++;
                     return {TokenType::ASSIGN, ":=", 0};
                 }}
