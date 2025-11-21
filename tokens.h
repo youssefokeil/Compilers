@@ -3,24 +3,25 @@
 typedef enum{
     SEMICOLON,      //0
     IF,             //1
-    THEN,           //2
-    END,            //3
-    REPEAT,         //4
-    UNTIL,          //5
-    IDENTIFIER,     //6
-    ASSIGN,         //7
-    READ,           //8
-    WRITE,          //9
-    LESSTHAN,       //10
-    EQUAL,          //11
-    PLUS,           //12
-    MINUS,          //13
-    MULT,           //14
-    DIV,            //15
-    OPENBRACKET,    //16
-    CLOSEDBRACKET,  //17
-    NUMBER,         //18
-    ERROR           //19
+    ElSE,           //2
+    THEN,           //3
+    END,            //4
+    REPEAT,         //5
+    UNTIL,          //6
+    IDENTIFIER,     //7
+    ASSIGN,         //8
+    READ,           //9
+    WRITE,          //10
+    LESSTHAN,       //11
+    EQUAL,          //12
+    PLUS,           //13
+    MINUS,          //14
+    MULT,           //15
+    DIV,            //16
+    OPENBRACKET,    //17
+    CLOSEDBRACKET,  //18
+    NUMBER,         //19
+    ERROR           //20
 } TokenType;
 
 struct TokenRecord

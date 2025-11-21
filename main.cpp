@@ -11,6 +11,7 @@ class Scanner{
     const regex reservedWordsPattern{"\\b(if|then|end|repeat|until|read|write)\\b"};
     map <string, TokenType> reserved ={
         {"if",IF},
+        {"else", ElSE},
         {"then", THEN},
         {"end",END},
         {"repeat",REPEAT},
@@ -18,9 +19,6 @@ class Scanner{
         {"read",READ},
         {"write",WRITE}
     };
-
-
-
 
     string input;
     int position;
@@ -41,6 +39,7 @@ public:
     map <TokenType, string> enumToString = {
         {SEMICOLON, "SEMICOLON"},
         {IF, "IF"},
+        {ElSE,"ELSE"},
         {THEN, "THEN"},
         {END, "END"},
         {REPEAT, "REPEAT"},
@@ -139,7 +138,7 @@ public:
                     return {TokenType::MINUS, "-", 0};
 
                 case '*':
-                    return {TokenType::MULT, ";", 0};
+                    return {TokenType::MULT, "*", 0};
 
                 case '/':
                     return {TokenType::DIV, "/", 0};
@@ -157,11 +156,28 @@ public:
     }
 };
 
-int main(){
-    string input;
-    input = "joe & ; := :x <  =  *  ( ) :XX : if 123 if & then end repeat until read write 123abc";
+int main(int argc, char* argv[]){
+    if (argc != 3) {
+        cout << "Usage: " << argv[0] << " <input_file> <output_file>" << endl;
+        return 1;
+    }
+    //Open input file
+    ifstream inputFile(argv[1]);
+    if (!inputFile.is_open()) {
+        cerr << "Error: Could not open " << argv[1] << endl;
+        return 1;
+    }
+    //Read file
+    string input((istreambuf_iterator<char>(inputFile)),
+                istreambuf_iterator<char>());
+    inputFile.close();
+
+
+    // string input;
+    // input = "joe & ; := :x <  =  *  ( ) :XX : if 123 if & then end repeat until read write 123abc";
+
     Scanner s(input);
-    cout<<input<<endl;
+    // cout<<input<<endl;
     vector<pair<string,string>> output;
     TokenRecord tr;
 
@@ -171,13 +187,27 @@ int main(){
         // cout << "Token Num Value: " << tr.num_val << endl;
         // cout << "Token Type:" << tr.token_type << endl;
         output.push_back({(tr.token_type==NUMBER?to_string(tr.num_val):tr.string_val),s.enumToString[tr.token_type]});//stringval is the first field, unless its a number, stringify numval, second field is the Token type(string(Enum))
-        cout<<endl;
+    }
+
+    //Write output
+    ofstream outputFile(argv[2]);
+    if (!outputFile.is_open()) {
+        cout << "Error: Could not create " << argv[2] << endl;
+        return 1;
     }
     for (int i = 0; i < output.size(); i++) {
-        cout<<output[i].first<<" ";
-        cout<<output[i].second;
-        cout<<endl;
+        outputFile << output[i].first << " " << output[i].second << endl;
     }
+    outputFile.close();
+
+    cout << "Tokenization complete" << endl;
+
+
+    // for (int i = 0; i < output.size(); i++) {
+    //     cout<<output[i].first<<" ";
+    //     cout<<output[i].second;
+    //     cout<<endl;
+    // }
 
     return 0;
 }
