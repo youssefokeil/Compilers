@@ -119,7 +119,7 @@ public:
                 case ':':
 
                     if(input[position]!='='){
-                        while (input[position]!=' ')
+                        while (input[position]!=' '&&!isAtEnd()) //||input[position]!= '\n' crashes for some reason
                             position++;
                     return {TokenType::ERROR, input.substr(start,position-start), 0};
                 }
@@ -149,7 +149,7 @@ public:
                     return {TokenType::CLOSEDBRACKET, ")", 0};
                 // I'll handle errors
                 default:
-                    while (input[position]!=' ')
+                    while (input[position]!=' '&&!isAtEnd())//||input[position]!= '\n', same here
                         position++;
                     return {TokenType::ERROR, input.substr(start, position-start), 0};
             }
