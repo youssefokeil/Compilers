@@ -111,14 +111,17 @@ public:
         else{
             //advance forward
             position++; //i know it makes logical sense to be after the switch-case
+            int start = position-1;
             switch(c){
                 case ';':
                     return {TokenType::SEMICOLON, ";", 0};
                 // matching the ':='    
                 case ':':
+
                     if(input[position]!='='){
-                        position++;
-                        return {TokenType::ERROR, "error", 0};
+                        while (input[position]!=' ')
+                            position++;
+                    return {TokenType::ERROR, input.substr(start,position-start), 0};
                 }
                     position++;
                     return {TokenType::ASSIGN, ":=", 0};
@@ -146,7 +149,9 @@ public:
                     return {TokenType::CLOSEDBRACKET, ")", 0};
                 // I'll handle errors
                 default:
-                    return {TokenType::ERROR, "error", 0};
+                    while (input[position]!=' ')
+                        position++;
+                    return {TokenType::ERROR, input.substr(start, position-start), 0};
             }
         }
     }
@@ -154,7 +159,7 @@ public:
 
 int main(){
     string input;
-    input = "joe & ; := :x <  =  *  ( ) :XX : if 123 if & then end repeat until read write";
+    input = "joe & ; := :x <  =  *  ( ) :XX : if 123 if & then end repeat until read write 123abc";
     Scanner s(input);
     cout<<input<<endl;
     vector<pair<string,string>> output;
