@@ -9,6 +9,18 @@ class Scanner{
     const regex numberPattern{"^[0-9]+\\b"};
     const regex identifierPattern{"^[a-zA-Z][a-zA-Z0-9_]*\\b"}; //notice that this will match reserved words too
     const regex reservedWordsPattern{"\\b(if|then|end|repeat|until|read|write)\\b"};
+    map <string, TokenType> reserved ={
+        {"if",IF},
+        {"then", THEN},
+        {"end",END},
+        {"repeat",REPEAT},
+        {"until",UNTIL},
+        {"read",READ},
+        {"write",WRITE}
+    };
+
+
+
 
     string input;
     int position;
@@ -25,6 +37,30 @@ public:
     bool isAtEnd(){
         return (position >= input.length());
     }
+
+    map <TokenType, string> enumToString = {
+        {SEMICOLON, "SEMICOLON"},
+        {IF, "IF"},
+        {THEN, "THEN"},
+        {END, "END"},
+        {REPEAT, "REPEAT"},
+        {UNTIL, "UNTIL"},
+        {IDENTIFIER, "IDENTIFIER"},
+        {ASSIGN, "ASSIGN"},
+        {READ, "READ"},
+        {WRITE, "WRITE"},
+        {LESSTHAN, "LESSTHAN"},
+        {EQUAL, "EQUAL"},
+        {PLUS, "PLUS"},
+        {MINUS, "MINUS"},
+        {MULT, "MULT"},
+        {DIV, "DIV"},
+        {OPENBRACKET, "OPENBRACKET"},
+        {CLOSEDBRACKET, "CLOSEDBRACKET"},
+        {NUMBER, "NUMBER"},
+        {ERROR, "ERROR"}
+    };
+
     
     // get the next token from a string, this will be used later in the parser
     TokenRecord getNextToken(){
@@ -41,8 +77,6 @@ public:
             else break;
         }
 
-
-        
         // substring the remaining of the input
         remaining = input.substr(position);
 
@@ -61,9 +95,15 @@ public:
         else if(regex_search(remaining, match, identifierPattern,regex_constants::match_continuous)){
             string lexeme = match.str();
             // change position to skip the lexeme
-            position += lexeme.length(); 
-            tokenRecord.token_type=TokenType::IDENTIFIER;
-            tokenRecord.string_val = lexeme;
+            position += lexeme.length();
+            if (reserved.find(lexeme) == reserved.end()) {//not reserved
+                tokenRecord.token_type=TokenType::IDENTIFIER;
+                tokenRecord.string_val = lexeme;
+            }
+            else {
+                tokenRecord.token_type= reserved[lexeme];
+                tokenRecord.string_val = lexeme;
+            }
             return tokenRecord;
         }
 
@@ -75,21 +115,29 @@ public:
                 case ';':
                     return {TokenType::SEMICOLON, ";", 0};
                 // matching the ':='    
-                case ':':{
-                if(input[position]=='='){
+                case ':':
+                    if(input[position]!='='){
+                        position++;
+                        return {TokenType::ERROR, "error", 0};
+                }
                     position++;
                     return {TokenType::ASSIGN, ":=", 0};
-                }}
+
                 case '<':
                     return {TokenType::LESSTHAN, "<", 0};
+
                 case '+':
                     return {TokenType::PLUS, "+", 0};
+
                 case '=':
                     return {TokenType::EQUAL, "=", 0};
+
                 case '-':
                     return {TokenType::MINUS, "-", 0};
+
                 case '*':
                     return {TokenType::MULT, ";", 0};
+
                 case '/':
                     return {TokenType::DIV, "/", 0};
                 case '(':
@@ -98,44 +146,33 @@ public:
                     return {TokenType::CLOSEDBRACKET, ")", 0};
                 // I'll handle errors
                 default:
-                    return {TokenType::ERROR, NULL, 0};
-            
-
+                    return {TokenType::ERROR, "error", 0};
             }
-
-
         }
-
-        TokenRecord tr;
-        tr.token_type=TokenType::UNTIL;
-        return tr;
-
-        
     }
 };
 
 int main(){
     string input;
-    input = " joe ; := 123 ";
+    input = "joe & ; := :x <  =  *  ( ) :XX : if 123 if & then end repeat until read write";
     Scanner s(input);
-    
-    TokenRecord tr= s.getNextToken();
-    cout << "Token Value: " << tr.string_val <<endl;
-    cout << "Token Type:" << tr.token_type << endl;
+    cout<<input<<endl;
+    vector<pair<string,string>> output;
+    TokenRecord tr;
 
-    TokenRecord tr2 = s.getNextToken();
-    cout << "Token Value: " << tr2.string_val <<endl;
-    cout << "Token Type:" << tr2.token_type<<endl;
-
-    TokenRecord tr3 = s.getNextToken();
-    cout << "Token Value: " << tr3.string_val <<endl;
-    cout << "Token Type:" << tr3.token_type<<endl;
-
-    TokenRecord tr4 = s.getNextToken();
-    cout << "Token Value: " << tr4.num_val <<endl;
-    cout << "Token Type:" << tr4.token_type <<endl;
-
-
+    while (!s.isAtEnd()) {
+        tr = s.getNextToken();
+        // cout << "Token String Value: " << tr.string_val <<endl;
+        // cout << "Token Num Value: " << tr.num_val << endl;
+        // cout << "Token Type:" << tr.token_type << endl;
+        output.push_back({(tr.token_type==NUMBER?to_string(tr.num_val):tr.string_val),s.enumToString[tr.token_type]});//stringval is the first field, unless its a number, stringify numval, second field is the Token type(string(Enum))
+        cout<<endl;
+    }
+    for (int i = 0; i < output.size(); i++) {
+        cout<<output[i].first<<" ";
+        cout<<output[i].second;
+        cout<<endl;
+    }
 
     return 0;
 }
