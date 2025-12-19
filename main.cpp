@@ -39,7 +39,7 @@ public:
     map <TokenType, string> enumToString = {
         {SEMICOLON, "SEMICOLON"},
         {IF, "IF"},
-        {ElSE,"ELSE"},
+        {ElSE,"ElSE"},
         {THEN, "THEN"},
         {END, "END"},
         {REPEAT, "REPEAT"},
