@@ -118,8 +118,18 @@ public:
                 case ':':
 
                     if(input[position]!='='){
-                        while (input[position]!=' '&&!isAtEnd()) //||input[position]!= '\n' crashes for some reason
+                        while (input[position]!=' ' && input[position]!='\n' &&
+           input[position]!='\t' && input[position]!='\r' && !isAtEnd()) //||input[position]!= '\n' crashes for some reason
                             position++;
+                        while((c == ' ' || c == '\n' || c == '\t' || c == '\r') && !isAtEnd()){
+                            position++;
+                            if(!isAtEnd())
+                                c = input[position];
+                            else break;
+                        }
+                        if(isAtEnd()){
+                            return {TokenType::ERROR, "", 0}; // or return some end-of-file token
+                        }
                     return {TokenType::ERROR, input.substr(start,position-start), 0};
                 }
                     position++;
@@ -148,9 +158,10 @@ public:
                     return {TokenType::CLOSEDBRACKET, ")", 0};
                 // I'll handle errors
                 default:
-                    while (input[position]!=' '&&!isAtEnd())//||input[position]!= '\n', same here
+                    while (!isAtEnd() && input[position]!=' ' && input[position]!='\n' &&
+                           input[position]!='\t' && input[position]!='\r')
                         position++;
-                    return {TokenType::ERROR, input.substr(start, position-start), 0};
+                    return {TokenType::ERROR, input.substr(start, position-start), 0};;
             }
         }
     }
@@ -183,6 +194,11 @@ int main(int argc, char* argv[]){
 
     while (!s.isAtEnd()) {
         tr = s.getNextToken();
+
+        // Skip empty error tokens (end of file)
+        if(tr.token_type == ERROR && tr.string_val.empty()) {
+            break;
+        }
         // cout << "Token String Value: " << tr.string_val <<endl;
         // cout << "Token Num Value: " << tr.num_val << endl;
         // cout << "Token Type:" << tr.token_type << endl;
@@ -211,3 +227,5 @@ int main(int argc, char* argv[]){
 
     return 0;
 }
+
+
