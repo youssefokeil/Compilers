@@ -75,6 +75,38 @@ public:
                 c = input[position]; 
             else break;
         }
+        // Add comment handling - skip everything between { and }
+        while(c == '{' && !isAtEnd()){
+            position++; // skip the opening {
+            // Keep consuming until we find } or reach end
+            while(!isAtEnd() && input[position] != '}'){
+                position++;
+            }
+            if(!isAtEnd() && input[position] == '}'){
+                position++; // skip the closing }
+            }
+            c=input[position];
+
+
+
+            // After skipping comment, skip any whitespace again
+            while((c == ' ' || c == '\n' || c == '\t' || c == '\r') && !isAtEnd()){
+                position++;
+                if(!isAtEnd())
+                    c = input[position];
+                else break;
+            }
+
+            // Update c for the next potential comment check
+            if(!isAtEnd())
+                c = input[position];
+        }
+
+        // Add this check to handle end of file after whitespace
+        if(isAtEnd()){
+            return {TokenType::ERROR, "", 0};
+        }
+
 
         // substring the remaining of the input
         remaining = input.substr(position);
